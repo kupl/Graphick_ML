@@ -172,7 +172,8 @@ for _, my_h in enumerate([0,1,-1,2,-2]):
   known_node_label = {}
   accurately_classified_nodes = 0
   for _, node in enumerate(known_nodes):
-    known_node_label[node] = node_label[node]
+    if node in node_label:
+      known_node_label[node] = node_label[node]
   for _, node in enumerate(val_nodes):
     my_sentences_scores = copy.deepcopy(node_score_sum[node])
     belief = []
@@ -180,7 +181,8 @@ for _, my_h in enumerate([0,1,-1,2,-2]):
       belief.append(0)
     adj_nodes = node_to_nodes[node]
     for _, adj_node in enumerate(adj_nodes & known_nodes):
-      belief[known_node_label[adj_node]] = belief[known_node_label[adj_node]] + my_h
+      if adj_node in node_label:
+        belief[known_node_label[adj_node]] = belief[known_node_label[adj_node]] + my_h
     for k in range(label_len):
       my_sentences_scores[k] = my_sentences_scores[k] + belief[k]
 
@@ -212,7 +214,8 @@ for _, node in enumerate(test_nodes):
     belief.append(0)
   adj_nodes = node_to_nodes[node]
   for _, adj_node in enumerate(adj_nodes & known_nodes):
-    belief[known_node_label[adj_node]] = belief[known_node_label[adj_node]] + h
+    if adj_node in node_label:
+      belief[known_node_label[adj_node]] = belief[known_node_label[adj_node]] + h
 
   for k in range(label_len):
     my_sentences_scores[k] = my_sentences_scores[k] + belief[k]
