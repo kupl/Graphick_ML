@@ -155,7 +155,7 @@ def find_max(my_list):
   max_val = 0
 
   for i in range(len(my_list)):
-    if my_list[i] >= max_val:
+    if my_list[i] > max_val:
       max_idx = i
       max_val = my_list[i]
 
@@ -167,8 +167,8 @@ print("Determine hyper parameter h")
 best_h = -3
 best_accuracy = 0
 
-for _, my_h in enumerate([0,1,-1,2,-2]):
-  known_nodes = train_nodes
+for _, my_h in enumerate([-2,-1,0,1,2]):
+  known_nodes = train_nodes | val_nodes
   known_node_label = {}
   accurately_classified_nodes = 0
   for _, node in enumerate(known_nodes):
@@ -189,21 +189,25 @@ for _, my_h in enumerate([0,1,-1,2,-2]):
     first = find_max(my_sentences_scores)
     if first == node_label[node]:
       accurately_classified_nodes = accurately_classified_nodes + 1
-    known_nodes.add(node)
-    known_node_label[node] = first
 
-  if accurately_classified_nodes > best_accuracy:
+  if accurately_classified_nodes >= best_accuracy:
     best_h = my_h
     best_accuracy = accurately_classified_nodes
+  print()
+  print("current h : {}".format(my_h))
+  print("current score : {}".format(accurately_classified_nodes))
+
 print("Best h : {}".format(best_h))
 
 h = best_h
+#h = 2
 
 
 known_nodes = val_nodes | train_nodes
 known_node_label = {}
 for _, node in enumerate(known_nodes):
-  known_node_label[node] = node_label[node]
+  if node in node_label:
+    known_node_label[node] = node_label[node]
 
 
 accurately_classified_nodes = 0
